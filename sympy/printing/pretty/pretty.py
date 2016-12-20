@@ -663,7 +663,10 @@ class PrettyPrinter(Printer):
 
     def _print_MatrixBase(self, e):
         D = self._print_matrix_contents(e)
-        D.baseline = D.height()//2
+        if D.height() % 2 == 0:
+            D.baseline = (D.height()//2) - 1
+        else:
+            D.baseline = (D.height()//2)
         D = prettyForm(*D.parens('[', ']'))
         return D
     _print_ImmutableMatrix = _print_MatrixBase
