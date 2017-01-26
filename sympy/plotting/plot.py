@@ -394,7 +394,7 @@ class Line2DBaseSeries(BaseSeries):
         np = import_module('numpy')
         c = self.line_color
         if hasattr(c, '__call__'):
-            f = np.vectorize(c)
+            f = np.vectorize(c, [np.float64])
             arity = _arity(c)
             if arity == 1 and self.is_parametric:
                 x = self.get_parameter_points()
