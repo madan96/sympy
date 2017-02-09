@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from sympy import symbols, sin, cos, sqrt, Function
+from sympy import symbols, sin, cos, sqrt, Function, Symbol
 from sympy.core.compatibility import u_decode as u
 from sympy.physics.vector import ReferenceFrame, dynamicsymbols
-from sympy.physics.vector.printing import (VectorLatexPrinter, vpprint)
+from sympy.physics.vector.printing import (VectorLatexPrinter, vpprint, vlatex)
+from sympy.physics.mechanics import functions
 
 # TODO : Figure out how to make the pretty printing tests readable like the
 # ones in sympy.printing.pretty.tests.test_printing.
@@ -167,3 +168,18 @@ def test_dyadic_latex():
                 r'\alpha \beta\mathbf{\hat{n}_z}\otimes \mathbf{\hat{n}_x}')
 
     assert x._latex() == expected
+    
+def test_issue_10173():
+
+    functions.mechanics_printing(use_latex="mathjax", latex_mode="equation")
+    t = Symbol("t")
+    p = Symbol("p")(t)
+    v = unicode_vpretty((p, p.diff(t), p.diff(t).diff(t), p.diff(t).diff(t).diff(t), p.diff(t).diff(t).diff(t).diff(t)))
+    v2 = vlatex(p.diff(t).diff(t).diff(t).diff(t))
+
+    uexpected = u("(p, ṗ, p̈, p⃛, p⃜)")
+    lexpected = r'\ddddot{p}'
+
+    assert uexpected == v
+    assert lexpected == v2
+
